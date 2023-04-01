@@ -136,8 +136,8 @@ function ballWallCollision() {
 function resetball(){
     ball.x = canvas.width/2 ;
     ball.y = paddle.y - ballRadius;
-    ball.dx = 3 * (Math.random()*2 -1) ;
-    ball.dy = -3;
+    ball.dx = 4 * (Math.random()*2 -1) ;
+    ball.dy = -4;
 }
 // BALL AND PADDLE COLLISION
 function ballPaddleCollision(){
