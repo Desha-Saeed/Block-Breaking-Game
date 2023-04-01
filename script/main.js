@@ -13,17 +13,17 @@ BG_IMG.src = "images/main1.jpg"
 // select level and return ballSpeed
 easy.addEventListener('click', function () {
     level.style = "display : none;"
-    ballSpeed =3;
+    ballSpeed =4;
     loop()
 })
 medium.addEventListener('click', function () {
     level.style = "display : none;"
-    ballSpeed =4;
+    ballSpeed =6;
     loop()
 })
 difficult.addEventListener('click', function () {
     level.style = "display : none;"
-    ballSpeed =5;
+    ballSpeed =8;
     loop()
 })
 
@@ -99,8 +99,8 @@ const ball = {
     y : paddle.y - ballRadius,
     r : ballRadius , 
     speed : 4,
-    dx : 3 * (Math.random()*2 -1),
-    dy : -3 
+    dx : 4 * (Math.random()*2 -1),
+    dy : -4 
 }
 
 function drawBall() {
@@ -145,8 +145,8 @@ function ballPaddleCollision(){
         let collidePoint = ball.x - (paddle.x + paddle.width/2);
         collidePoint = collidePoint / (paddle.width/2);
         let angle = collidePoint * Math.PI/3;
-        ball.dx = ball.speed * Math.sin(angle);
-        ball.dy = - ball.speed * Math.cos(angle);
+        ball.dx = ballSpeed * Math.sin(angle);
+        ball.dy = - ballSpeed * Math.cos(angle);
     }
 }
 
