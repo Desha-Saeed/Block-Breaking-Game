@@ -99,7 +99,7 @@ const ball = {
     y : paddle.y - ballRadius,
     r : ballRadius , 
     speed : 4,
-    dx : 4 * (Math.random()*2 -1),
+    dx : 4 ,
     dy : -4 
 }
 
@@ -136,7 +136,7 @@ function ballWallCollision() {
 function resetball(){
     ball.x = canvas.width/2 ;
     ball.y = paddle.y - ballRadius;
-    ball.dx = 4 * (Math.random()*2 -1) ;
+    ball.dx = 4 ;
     ball.dy = -4;
 }
 // BALL AND PADDLE COLLISION
