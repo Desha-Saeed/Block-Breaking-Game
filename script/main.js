@@ -194,7 +194,7 @@ console.log(bricks);
 function drawBricks() {
   for (let row = 0; row < brick.row; row++) {
     for (let column = 0; column < brick.col; column++) {
-      if (bricks[row][column].status === 2) {
+      if (bricks[row][column].status > 0) {
         ctx.fillStyle = brick.fillColor;
         ctx.fillRect(
           bricks[row][column].x,
@@ -202,6 +202,29 @@ function drawBricks() {
           brick.width,
           brick.height
         );
+      }
+    }
+  }
+}
+
+//ball brick collision
+
+function brickCollision() {
+  for (let row = 0; row < brick.row; row++) {
+    for (let column = 0; column < brick.col; column++) {
+      if (bricks[row][column].status > 0) {
+        if (
+          ball.x + ball.r > bricks[row][column].x &&
+          ball.x - ball.r < bricks[row][column].x + brick.width &&
+          ball.y + ball.r > bricks[row][column].y &&
+          ball.y - ball.r < bricks[row][column].y + brick.height
+        ) {
+          ball.dy = -ball.dy;
+
+          bricks[row][column].status--;
+
+          console.log(bricks[row][column].status);
+        }
       }
     }
   }
@@ -219,6 +242,7 @@ function update() {
   moveBall();
   ballWallCollision();
   ballPaddleCollision();
+  brickCollision();
 }
 
 //------------------loop function-----------------
