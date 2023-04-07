@@ -13,17 +13,17 @@ BG_IMG.src = 'images/main1.jpg';
 // select level and return ballSpeed
 easy.addEventListener('click', function () {
   level.style = 'display : none;';
-  ballSpeed = 4;
+  ballSpeed = 3;
   loop();
 });
 medium.addEventListener('click', function () {
   level.style = 'display : none;';
-  ballSpeed = 6;
+  ballSpeed = 4;
   loop();
 });
 difficult.addEventListener('click', function () {
   level.style = 'display : none;';
-  ballSpeed = 8;
+  ballSpeed = 5;
   loop();
 });
 
@@ -92,9 +92,9 @@ const ball = {
   x: canvas.width / 2,
   y: paddle.y - ballRadius,
   r: ballRadius,
-  speed: 4,
-  dx: 4,
-  dy: -4,
+  speed: 3,
+  dx: 3,
+  dy: -3,
 };
 
 function drawBall() {
