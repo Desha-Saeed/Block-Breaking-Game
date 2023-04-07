@@ -163,10 +163,7 @@ const brick = {
   strokeColor: '#FFFFFF',
 };
 
-let bricks = [
-  [0, 0],
-  [0, 1],
-];
+let bricks = [];
 
 // Creating the bricks array function
 function createBricks() {
