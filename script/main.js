@@ -151,19 +151,22 @@ function ballPaddleCollision() {
 //--------------------Bricks------------------
 
 const brick = {
-  row: 3,
-  col: 5,
+  row: 4,
+  col: 7,
 
-  width: 80,
+  width: 90,
   height: 30,
-  offsetLeft: 70,
+  offsetLeft: 20,
   offsetTop: 30,
-  marginTop: 100,
-  fillColor: '#635985',
+  marginTop: 30,
+  fillColor: '#270082',
   strokeColor: '#FFFFFF',
 };
 
-let bricks = [];
+let bricks = [
+  [0, 0],
+  [0, 1],
+];
 
 // Creating the bricks array function
 function createBricks() {
@@ -173,13 +176,18 @@ function createBricks() {
 
     //for loop for every brick in row and columns
     for (let column = 0; column < brick.col; column++) {
+      //every brick
       bricks[row][column] = {
+        // x axis for every brick on columns
         x: column * (brick.width + brick.offsetLeft) + brick.offsetLeft,
+        //y axis for every brick on rows
         y:
           row * (brick.height + brick.offsetTop) +
           brick.offsetTop +
           brick.marginTop,
-        status: 2,
+
+        //state of the brick
+        state: 2,
       };
     }
   }
@@ -194,7 +202,8 @@ console.log(bricks);
 function drawBricks() {
   for (let row = 0; row < brick.row; row++) {
     for (let column = 0; column < brick.col; column++) {
-      if (bricks[row][column].status > 0) {
+      if (bricks[row][column].state === 2) {
+        ctx.beginPath();
         ctx.fillStyle = brick.fillColor;
         ctx.fillRect(
           bricks[row][column].x,
@@ -202,6 +211,18 @@ function drawBricks() {
           brick.width,
           brick.height
         );
+        ctx.closePath();
+      }
+      if (bricks[row][column].state === 1) {
+        ctx.beginPath();
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(
+          bricks[row][column].x,
+          bricks[row][column].y,
+          brick.width,
+          brick.height
+        );
+        ctx.closePath();
       }
     }
   }
@@ -212,18 +233,21 @@ function drawBricks() {
 function brickCollision() {
   for (let row = 0; row < brick.row; row++) {
     for (let column = 0; column < brick.col; column++) {
-      if (bricks[row][column].status > 0) {
+      if (bricks[row][column].state > 0) {
         if (
-          ball.x + ball.r > bricks[row][column].x &&
-          ball.x - ball.r < bricks[row][column].x + brick.width &&
-          ball.y + ball.r > bricks[row][column].y &&
-          ball.y - ball.r < bricks[row][column].y + brick.height
+          ball.x + ball.r > bricks[row][column].x && //right
+          ball.x - ball.r < bricks[row][column].x + brick.width && // left
+          ball.y + ball.r > bricks[row][column].y && // bottom
+          ball.y - ball.r < bricks[row][column].y + brick.height // top
         ) {
+          // console.log(bricks[row][column]);
+          //change ball direction on hit
           ball.dy = -ball.dy;
 
-          bricks[row][column].status--;
+          //decrement state by 1
+          bricks[row][column].state--;
 
-          console.log(bricks[row][column].status);
+          console.log(bricks[row][column].state);
         }
       }
     }
