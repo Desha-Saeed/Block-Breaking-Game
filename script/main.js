@@ -3,27 +3,113 @@ const easy = document.getElementById('easy');
 const medium = document.getElementById('medium');
 const difficult = document.getElementById('difficult');
 let life = 3;
+let GAME_END = false;
+let SCORE = 0;
+const SCORE_Count = 10;
+const ballRadius = 10;
 let ballSpeed;
+let row;
+let col;
+let brick;
+let ball;
+//--------------------------------------------
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const BG_IMG = new Image();
 BG_IMG.src = 'images/main1.jpg';
 
+const gameOver_IMG = new Image();
+gameOver_IMG.src = 'images/gameover.png';
+
 // select level and return ballSpeed
 easy.addEventListener('click', function () {
   level.style = 'display : none;';
-  ballSpeed = 3;
+
+  ballSpeed = 4;
+
+  ball = {
+    x: canvas.width / 2,
+    y: paddle.y - ballRadius,
+    r: ballRadius,
+    speed: ballSpeed,
+    dx: ballSpeed,
+    dy: -3,
+  };
+
+  row = 4;
+  col = 4;
+  brick = {
+    row,
+    col,
+
+    width: 90,
+    height: 30,
+    offsetLeft: 80,
+    offsetTop: 20,
+    marginTop: 30,
+    fillColor: 'aqua',
+    strokeColor: '#FFFFFF',
+  };
+  createBricks();
   loop();
 });
 medium.addEventListener('click', function () {
   level.style = 'display : none;';
-  ballSpeed = 4;
+  ballSpeed = 6;
+
+  ball = {
+    x: canvas.width / 2,
+    y: paddle.y - ballRadius,
+    r: ballRadius,
+    speed: ballSpeed,
+    dx: ballSpeed,
+    dy: -3,
+  };
+
+  row = 5;
+  col = 5;
+  brick = {
+    row,
+    col,
+
+    width: 90,
+    height: 30,
+    offsetLeft: 55,
+    offsetTop: 23,
+    marginTop: 30,
+    fillColor: 'aqua',
+    strokeColor: '#FFFFFF',
+  };
+  createBricks();
   loop();
 });
 difficult.addEventListener('click', function () {
   level.style = 'display : none;';
-  ballSpeed = 5;
+  ballSpeed = 7;
+
+  ball = {
+    x: canvas.width / 2,
+    y: paddle.y - ballRadius,
+    r: ballRadius,
+    speed: ballSpeed,
+    dx: ballSpeed,
+    dy: -3,
+  };
+
+  brick = {
+    row: 6,
+    col: 7,
+
+    width: 90,
+    height: 30,
+    offsetLeft: 20,
+    offsetTop: 24,
+    marginTop: 30,
+    fillColor: 'aqua',
+    strokeColor: '#FFFFFF',
+  };
+  createBricks();
   loop();
 });
 
@@ -86,16 +172,6 @@ function movePaddle() {
 }
 
 //----------------create a ball-----------------
-const ballRadius = 10;
-
-const ball = {
-  x: canvas.width / 2,
-  y: paddle.y - ballRadius,
-  r: ballRadius,
-  speed: 3,
-  dx: 3,
-  dy: -3,
-};
 
 function drawBall() {
   ctx.beginPath();
@@ -116,12 +192,15 @@ function moveBall() {
 function ballWallCollision() {
   if (ball.x + ball.r > canvas.width || ball.x - ball.r < 0) {
     ball.dx = -ball.dx;
+    WALLHIT.play();
   }
   if (ball.y - ball.r < 0) {
     ball.dy = -ball.dy;
+    WALLHIT.play();
   }
   if (ball.y + ball.r > canvas.height) {
     life--;
+    LIFELOST.play();
     resetball();
   }
 }
@@ -140,6 +219,7 @@ function ballPaddleCollision() {
     paddle.y < paddle.y + paddle.height &&
     ball.y > paddle.y
   ) {
+    PADDLEHIT.play();
     let collidePoint = ball.x - (paddle.x + paddle.width / 2);
     collidePoint = collidePoint / (paddle.width / 2);
     let angle = (collidePoint * Math.PI) / 3;
@@ -149,19 +229,6 @@ function ballPaddleCollision() {
 }
 
 //--------------------Bricks------------------
-
-const brick = {
-  row: 4,
-  col: 7,
-
-  width: 90,
-  height: 30,
-  offsetLeft: 20,
-  offsetTop: 30,
-  marginTop: 30,
-  fillColor: '#270082',
-  strokeColor: '#FFFFFF',
-};
 
 let bricks = [];
 
@@ -190,8 +257,6 @@ function createBricks() {
   }
 }
 
-createBricks();
-
 console.log(bricks);
 
 //Drawing the bricks on the screen
@@ -212,7 +277,7 @@ function drawBricks() {
       }
       if (bricks[row][column].state === 1) {
         ctx.beginPath();
-        ctx.fillStyle = '#FFFFFF';
+        ctx.fillStyle = '#FFFF00';
         ctx.fillRect(
           bricks[row][column].x,
           bricks[row][column].y,
@@ -240,23 +305,95 @@ function brickCollision() {
           // console.log(bricks[row][column]);
           //change ball direction on hit
           ball.dy = -ball.dy;
+          BRICKHIT.play();
 
           //decrement state by 1
           bricks[row][column].state--;
 
           console.log(bricks[row][column].state);
+          SCORE += SCORE_Count;
         }
       }
     }
   }
 }
 
+// show game life
+function showGameStats(text, textX, textY, img, imgX, imgY) {
+  // draw text
+  ctx.fillStyle = '#FFF';
+  ctx.font = '25px Germania One';
+  ctx.fillText(text, textX, textY);
+
+  // draw image
+  ctx.drawImage(img, imgX, imgY, (width = 40), (height = 40)); //size image
+}
+
 //----------------draw Function------------------
+const LIFE_IMG = new Image();
+LIFE_IMG.src = 'images/life.png';
+
+const SCORE_IMG = new Image();
+SCORE_IMG.src = 'images/score.png';
+
+const Sound_IMG = new Image();
+Sound_IMG.src = 'images/SOUND_ON.png';
+
 function draw() {
   drawPaddle();
   drawBall();
   drawBricks();
+
+  // SHOW LIVES
+  showGameStats(life, canvas.width - 25, 30, LIFE_IMG, canvas.width - 70, 5);
+  // SHOW SCORE
+  showGameStats(SCORE, 65, 35, SCORE_IMG, 10, 5);
 }
+
+// game over
+
+function gameOver() {
+  if (life <= 0) {
+    showYouLose();
+    GAME_END = true;
+  }
+}
+
+const WALLHIT = new Audio();
+WALLHIT.src = 'sounds/wall.mp3';
+
+const LIFELOST = new Audio();
+LIFELOST.src = 'sounds/life_lost.mp3';
+
+const PADDLEHIT = new Audio();
+PADDLEHIT.src = 'sounds/paddle_hit.mp3';
+
+const BRICKHIT = new Audio();
+BRICKHIT.src = 'sounds/brick_hit.mp3';
+
+// SELECT SOUND ELEMENT
+const soundElement = document.getElementById('sound');
+
+soundElement.addEventListener('click', audioManager);
+
+function audioManager() {
+  // CHANGE IMAGE SOUND_ON/OFF
+
+  let imgSrc = soundElement.getAttribute('src');
+  let SOUND_IMG =
+    imgSrc == 'images/SOUND_ON.png'
+      ? 'images/SOUND_OFF.png'
+      : 'images/SOUND_ON.png';
+
+  soundElement.setAttribute('src', SOUND_IMG);
+
+  // MUTE AND UNMUTE SOUNDS
+  WALLHIT.muted = WALLHIT.muted ? false : true;
+  PADDLEHIT.muted = PADDLEHIT.muted ? false : true;
+  BRICKHIT.muted = BRICKHIT.muted ? false : true;
+  LIFELOST.muted = LIFELOST.muted ? false : true;
+}
+
 //----------------update function for logic------------
 function update() {
   movePaddle();
@@ -264,12 +401,27 @@ function update() {
   ballWallCollision();
   ballPaddleCollision();
   brickCollision();
+  gameOver();
 }
 
 //------------------loop function-----------------
 function loop() {
   ctx.drawImage(BG_IMG, 0, 0);
   draw();
+  // debugger;
   update();
-  requestAnimationFrame(loop);
+
+  if (!GAME_END) {
+    requestAnimationFrame(loop);
+  } else {
+    setTimeout(() => {
+      location.reload();
+    }, 3000);
+    ctx.drawImage(gameOver_IMG, 110, 110);
+  }
+}
+// const gameover = document.getElementById("gameover");
+function showYouLose() {
+  gameover.style.display = 'block';
+  youlose.style.display = 'block';
 }
