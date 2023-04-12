@@ -332,12 +332,10 @@ function winGame() {
   if (win) {
     let winSound = new Audio();
     winSound.src = 'sounds/win.mp3';
-
-    ctx.drawImage(winImg, 110, 110);
-
     setTimeout(() => {
       location.reload();
     }, 1500);
+    ctx.drawImage(winImg, 0, 20);
   }
 }
 
