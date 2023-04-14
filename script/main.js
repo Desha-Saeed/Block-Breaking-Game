@@ -24,7 +24,7 @@ const gameOver_IMG = new Image();
 gameOver_IMG.src = 'images/gameover.png';
 
 const winImg = new Image();
-winImg.src = 'images/win.jpeg';
+winImg.src = 'images/win.png';
 
 // select level and return ballSpeed
 easy.addEventListener('click', function () {
@@ -38,19 +38,19 @@ easy.addEventListener('click', function () {
     r: ballRadius,
     speed: ballSpeed,
     dx: ballSpeed,
-    dy: -3,
+    dy: ballSpeed,
   };
 
-  row = 2;
-  col = 2;
+  row = 4;
+  col = 5;
   brick = {
     row,
     col,
 
     width: 90,
     height: 30,
-    offsetLeft: 80,
-    offsetTop: 20,
+    offsetLeft: 55,
+    offsetTop: 23,
     marginTop: 30,
     fillColor: 'aqua',
     strokeColor: '#FFFFFF',
@@ -158,7 +158,7 @@ document.addEventListener('keyup', function (e) {
 });
 // controll with Mouse
 document.addEventListener('mousemove', function (e) {
-  let relativeX = e.clientX - canvas.offsetLeft;
+  let relativeX = e.clientX - canvas.offsetLeft; // mouse postion
   if (
     relativeX > paddleWidth / 2 &&
     relativeX + paddleWidth / 2 < canvas.width
@@ -259,7 +259,7 @@ function createBricks() {
   }
 }
 
-console.log(bricks);
+
 
 //Drawing the bricks on the screen
 
@@ -332,10 +332,11 @@ function winGame() {
   if (win) {
     let winSound = new Audio();
     winSound.src = 'sounds/win.mp3';
-    setTimeout(() => {
-      location.reload();
-    }, 1500);
-    ctx.drawImage(winImg, 0, 20);
+    winSound.play();
+    ctx.drawImage(winImg, 68, 120);
+    if (state ==0  ){
+      return false;
+    }
   }
 }
 
